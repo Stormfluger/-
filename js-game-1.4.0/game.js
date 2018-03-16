@@ -162,59 +162,45 @@ class LevelParser {
     this._symbolMap
       .set('x', 'wall')
       .set('!', 'lava')
-      .set('@', 'Player')
-      .set('o', 'Coin')
-      .set('=', 'HorizontalFireball')
-      .set('|', 'VerticalFireball')
-      .set('v', 'Fireball');
   }
   
   actorFromSymbol(symbol) {
-  	if (!symbol) {
-  		return undefined;
-  	}
-
+  	if (symbol === undefined) {
+			return undefined;
+		} else
     return this.actorsMap[symbol];
   }
-  
+ //  	obstacleFromSymbol(symbol) {
+	// 	if (symbol === 'x') {
+	// 		return 'wall';
+	// 	} else if (symbol === '!') {
+	// 		return 'lava';
+	// 	} else {
+	// 		return undefined;
+	// 	}
+	// }
   obstacleFromSymbol(symbol) {
+  	if (symbol === 'x' || symbol === '!') {
     return this._symbolMap.get(symbol);
+  } else
+    return undefined;
   }
   
-  createGrid(data) {
-    if (Array.isArray(data)) {
-      return data.map(row => {
-        return row.split('').map(elem => {
-          let value = this._symbolMap.get(elem);
-          if (value === 'wall' || value === 'lava') {
-            return value;
-          } else {
-            return undefined;
-          }
-        })
-      })
-    }
+  createGrid(data = []) {
+    return data.map(row => row.split('').map(elem => this.obstacleFromSymbol(elem)));
   }
-  
-  createActors(data) {
-    if (Array.isArray(data)) {
-      let result = [];
-
+    createActors(data = []) {
+      const result = [];
       data.forEach((row, i) => {
           row.split('').forEach((symbol, j) => {
-            if (this.actorsMap) {
-              let value = this.actorsMap[symbol];
+            const value = this.actorFromSymbol(symbol);
               if (Actor === value || Actor.isPrototypeOf(value)) {
                 result.push(new value(new Vector(j, i)));
               }
-            }
-        })
+          })
       })
-      
-      return result;
+     return result;
     }
-  }
-  
   parse(data) {
     return new Level(this.createGrid(data), this.createActors(data));
   }
@@ -223,34 +209,18 @@ class LevelParser {
 class Player extends Actor {
   constructor(pos) {
     super(pos);
-		this.pos = this.pos.plus(new Vector(0, -0.5));
+	this.pos = this.pos.plus(new Vector(0, -0.5));
     this.size = new Vector(0.8, 1.5);
   }
-
-	set pos(value) {
-		this._pos = value;
-	}
-
-  get pos() {
-  	return this._pos;
-  }
-  
-  get type() {
-    return 'player';
-  }
+	get type() {return 'player';}
 }
-
 class Fireball extends Actor {
   constructor(pos = new Vector(0, 0), speed = new Vector(0, 0)) {
-    super();
-    this.pos = pos;
-    this.speed = speed;
+    super(pos, new Vector(1, 1), speed);
   }
-  
   get type() {
     return 'fireball';
   }
-  
   getNextPosition(factor = 1) {
   	if (this.speed.x === 0 && this.speed.y === 0) {
   		return this.pos;
