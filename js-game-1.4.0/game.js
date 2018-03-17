@@ -189,18 +189,45 @@ class LevelParser {
   createGrid(data = []) {
     return data.map(row => row.split('').map(elem => this.obstacleFromSymbol(elem)));
   }
+  
+    // createActors(data = []) {
+    //   const actors = [];
+    //   data.forEach((row, i) => {
+    //       row.split('').forEach((symbol, j) => {
+    //         const value = this.actorFromSymbol(symbol);
+    //         if (typeof value === 'function') {
+    //         const actor = new value(new Vector(j, i));
+    //           if (actor instanceof Actor) {
+    //           actors.push(actor);
+    //           }
+    //         }
+    //         // if (Actor === value || Actor.isPrototypeOf(value)) {
+    //         //   actors.push(new value(new Vector(j, i)));
+    //         // }
+    //       })
+    //   })
+    //  return actors;
+    // }
     createActors(data = []) {
-      const result = [];
-      data.forEach((row, i) => {
-          row.split('').forEach((symbol, j) => {
-            const value = this.actorFromSymbol(symbol);
-              if (Actor === value || Actor.isPrototypeOf(value)) {
-                result.push(new value(new Vector(j, i)));
-              }
-          })
-      })
-     return result;
-    }
+    const arrOfRow = data.map(str => str.split(''));
+    const result = [];
+    arrOfRow.forEach((row, y) => {
+      row.forEach((symbol, x) => {
+        if (
+          this.actorsMap &&
+          this.actorsMap[symbol] &&
+          typeof this.actorsMap[symbol] === 'function'
+        ) {
+          const actor = new this.actorsMap[symbol](new Vector(x, y));
+          if (actor instanceof Actor) {
+            result.push(actor);
+          }
+        }
+      });
+    });
+    return result;
+  }
+
   parse(data) {
     return new Level(this.createGrid(data), this.createActors(data));
   }
