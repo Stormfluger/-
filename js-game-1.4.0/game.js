@@ -7,9 +7,9 @@ class Vector {
   }
   
   plus(vector) {
-  	if (!(vector instanceof Vector)) {
-  		throw new Error('Можно прибавлять к вектору только вектор типа Vector')
-  	}
+    if (!(vector instanceof Vector)) {
+      throw new Error('Можно прибавлять к вектору только вектор типа Vector')
+    }
 
     return new Vector(this.x + vector.x, this.y + vector.y);
   }
@@ -155,26 +155,11 @@ class Level {
   }
 }
 class LevelParser {
-<<<<<<< HEAD
   constructor(actorsMap = {}) {
     this.actorsSymbolMap = Object.assign({}, actorsMap);
-=======
-  // можно добвавить значение по-умолчанию
-  constructor(actorsMap) {
-    // лучше создать копию, чтобы нельзя было изменить поле извне
-    this.actorsMap = actorsMap;
-
-    // использовать Map тут неоправдано,
-    // эту логику можно полностью описать в obstacleFromSymbol
-    this._symbolMap = new Map();
-    this._symbolMap
-      .set('x', 'wall')
-      .set('!', 'lava')
->>>>>>> 919da57efe30592ae8a3db37a7cfabf9b8d8c29f
   }
   actorFromSymbol(symbol) {
-<<<<<<< HEAD
-  	return this.actorsSymbolMap[symbol];
+    return this.actorsSymbolMap[symbol];
   }
   obstacleFromSymbol(symbol) {
     switch (symbol) {
@@ -185,36 +170,11 @@ class LevelParser {
         return 'lava';
 
     }
-=======
-    // лишняя проверка
-  	if (symbol === undefined) {
-			return undefined;
-		} else
-    return this.actorsMap[symbol];
-  }
-  // комментарии со старым кодом нужно удалить
- //  	obstacleFromSymbol(symbol) {
-	// 	if (symbol === 'x') {
-	// 		return 'wall';
-	// 	} else if (symbol === '!') {
-	// 		return 'lava';
-	// 	} else {
-	// 		return undefined;
-	// 	}
-	// }
-  obstacleFromSymbol(symbol) {
-    // формативароине, дублирование логики
-  	if (symbol === 'x' || symbol === '!') {
-    return this._symbolMap.get(symbol);
-  } else
-    return undefined;
->>>>>>> 919da57efe30592ae8a3db37a7cfabf9b8d8c29f
   }
  
   createGrid(data = []) {
     return data.map(row => row.split('').map(elem => this.obstacleFromSymbol(elem)));
   }
-<<<<<<< HEAD
 
   createActors(data = []) {
     const result = [];
@@ -224,41 +184,6 @@ class LevelParser {
         if (typeof actorClass === 'function') {
           const actor = new actorClass(new Vector(x, y));
 
-=======
-  
-    // createActors(data = []) {
-    //   const actors = [];
-    //   data.forEach((row, i) => {
-    //       row.split('').forEach((symbol, j) => {
-    //         const value = this.actorFromSymbol(symbol);
-    //         if (typeof value === 'function') {
-    //         const actor = new value(new Vector(j, i));
-    //           if (actor instanceof Actor) {
-    //           actors.push(actor);
-    //           }
-    //         }
-    //         // if (Actor === value || Actor.isPrototypeOf(value)) {
-    //         //   actors.push(new value(new Vector(j, i)));
-    //         // }
-    //       })
-    //   })
-    //  return actors;
-    // }
-    createActors(data = []) {
-    // форматирование
-      // split можно было сделать прямо в forEach
-    const arrOfRow = data.map(str => str.split(''));
-    const result = [];
-    arrOfRow.forEach((row, y) => {
-      row.forEach((symbol, x) => {
-        // дублирование actorFromSymbol, можно оставить только одну проверку
-        if (
-          this.actorsMap &&
-          this.actorsMap[symbol] &&
-          typeof this.actorsMap[symbol] === 'function'
-        ) {
-          const actor = new this.actorsMap[symbol](new Vector(x, y));
->>>>>>> 919da57efe30592ae8a3db37a7cfabf9b8d8c29f
           if (actor instanceof Actor) {
             result.push(actor);
           }
@@ -277,20 +202,12 @@ class LevelParser {
 }
 
 class Player extends Actor {
-<<<<<<< HEAD
   constructor(pos = new Vector(0, 0)) {
     super(pos.plus(new Vector(0, -0.5)), new Vector(0.8, 1.5), new Vector(0, 0));
   }
 
   get type() {
     return 'player';
-=======
-  constructor(pos) {
-    super(pos);
-    // pos, size, speed должны задаваться через вызов конструктора базового класса
-	this.pos = this.pos.plus(new Vector(0, -0.5));
-    this.size = new Vector(0.8, 1.5);
->>>>>>> 919da57efe30592ae8a3db37a7cfabf9b8d8c29f
   }
 }
 
@@ -301,14 +218,6 @@ class Fireball extends Actor {
   get type() {
     return 'fireball';
   }
-<<<<<<< HEAD
-=======
-  getNextPosition(factor = 1) {
-    // зачем эта проверка?
-  	if (this.speed.x === 0 && this.speed.y === 0) {
-  		return this.pos;
-  	}
->>>>>>> 919da57efe30592ae8a3db37a7cfabf9b8d8c29f
 
   getNextPosition(time = 1) {
     return this.pos.plus(this.speed.times(time));
@@ -324,13 +233,12 @@ class Fireball extends Actor {
     if (!isIntersect) {
       this.pos = nextPosition;
     } else {
-    	this.handleObstacle();
+      this.handleObstacle();
     }
   }
 }
 
 class HorizontalFireball extends Fireball {
-<<<<<<< HEAD
     constructor(pos = new Vector(0, 0)) {
         super(pos, new Vector(2, 0));
     }
@@ -382,73 +290,6 @@ class Coin extends Actor {
     act(time) {
         this.pos = this.getNextPosition(time);
     }
-=======
-  constructor(pos) {
-    super(pos);
-    // pos, size, speed должны задаваться через вызов конструктора базового класса
-    this.size = new Vector(1, 1);
-    this.speed = new Vector(2, 0);
-  }
-}
-
-class VerticalFireball extends Fireball {
-  constructor(pos) {
-    super(pos);
-    // pos, size, speed должны задаваться через вызов конструктора базового класса
-    this.size = new Vector(1, 1);
-    this.speed = new Vector(0, 2);
-  }
-}
-
-class FireRain extends Fireball {
-  constructor(pos) {
-    super(pos);
-    // поле лучше назвать как-нибудь вроде startPos
-    this._pos = pos;
-    // pos, size, speed должны задаваться через вызов конструктора базового класса
-    this.size = new Vector(1, 1);
-    this.speed = new Vector(0, 3);
-  }
-  
-  handleObstacle() {
-     this.pos = this._pos;
-  }
-}
-
-class Coin extends Actor {
-  constructor(pos) {
-    super(pos);
-    // pos, size, speed должны задаваться через вызов конструктора базового класса
-    this.pos = this.pos.plus(new Vector(0.2, 0.1));
-    this._pos = this.pos;
-    this.size = new Vector(0.6, 0.6);
-    this.springSpeed = 8;
-    this.springDist = 0.07;
-    this.spring = Math.random() * 2 * Math.PI;
-  }
-  
-  get type() {
-    return 'coin';
-  }
-  
-  updateSpring(time=1) {
-    this.spring = this.spring + this.springSpeed * time;
-  }
-  
-  getSpringVector() {
-    return new Vector(0, Math.sin(this.spring) * this.springDist);
-  }
-  
-  getNextPosition(time=1) {
-  	this.updateSpring(time);
-  	let newPosition = new Vector(this._pos.x, this._pos.y);
-    return newPosition.plus(this.getSpringVector());
-  }
-  
-  act(time) {
-    this.pos = this.getNextPosition(time);
-  }
->>>>>>> 919da57efe30592ae8a3db37a7cfabf9b8d8c29f
 }
 
 const actorDict = {
@@ -461,8 +302,8 @@ const actorDict = {
 const parser = new LevelParser(actorDict);
 
 loadLevels().then(schemasStr => {
-	let schemas = JSON.parse(schemasStr);
+  let schemas = JSON.parse(schemasStr);
   return runGame(schemas, parser, DOMDisplay);
 }).then(() => {
-	alert('Вы выиграли!')
+  alert('Вы выиграли!')
 });
