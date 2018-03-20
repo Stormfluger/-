@@ -162,15 +162,21 @@ class LevelParser {
   	return this.actorsSymbolMap[symbol];
   }
   obstacleFromSymbol(symbol) {
-  	if (symbol === 'x' || symbol === '!') {
-    return this._symbolMap.get(symbol);
-  } else
-    return undefined;
+    switch (symbol) {
+      case 'x':
+        return 'wall';
+
+      case '!':
+        return 'lava';
+
+    }
   }
  
   createGrid(data = []) {
     return data.map(row => row.split('').map(elem => this.obstacleFromSymbol(elem)));
   }
+
+  createActors(data = []) {
     const result = [];
     data.forEach((row, y) => {
       row.split('').forEach((elem, x) => {
