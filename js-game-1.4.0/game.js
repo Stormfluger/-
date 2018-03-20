@@ -155,9 +155,13 @@ class Level {
   }
 }
 class LevelParser {
+  // можно добвавить значение по-умолчанию
   constructor(actorsMap) {
+    // лучше создать копию, чтобы нельзя было изменить поле извне
     this.actorsMap = actorsMap;
-    
+
+    // использовать Map тут неоправдано,
+    // эту логику можно полностью описать в obstacleFromSymbol
     this._symbolMap = new Map();
     this._symbolMap
       .set('x', 'wall')
@@ -165,11 +169,13 @@ class LevelParser {
   }
   
   actorFromSymbol(symbol) {
+    // лишняя проверка
   	if (symbol === undefined) {
 			return undefined;
 		} else
     return this.actorsMap[symbol];
   }
+  // комментарии со старым кодом нужно удалить
  //  	obstacleFromSymbol(symbol) {
 	// 	if (symbol === 'x') {
 	// 		return 'wall';
@@ -180,6 +186,7 @@ class LevelParser {
 	// 	}
 	// }
   obstacleFromSymbol(symbol) {
+    // формативароине, дублирование логики
   	if (symbol === 'x' || symbol === '!') {
     return this._symbolMap.get(symbol);
   } else
@@ -209,10 +216,13 @@ class LevelParser {
     //  return actors;
     // }
     createActors(data = []) {
+    // форматирование
+      // split можно было сделать прямо в forEach
     const arrOfRow = data.map(str => str.split(''));
     const result = [];
     arrOfRow.forEach((row, y) => {
       row.forEach((symbol, x) => {
+        // дублирование actorFromSymbol, можно оставить только одну проверку
         if (
           this.actorsMap &&
           this.actorsMap[symbol] &&
@@ -236,6 +246,7 @@ class LevelParser {
 class Player extends Actor {
   constructor(pos) {
     super(pos);
+    // pos, size, speed должны задаваться через вызов конструктора базового класса
 	this.pos = this.pos.plus(new Vector(0, -0.5));
     this.size = new Vector(0.8, 1.5);
   }
@@ -249,6 +260,7 @@ class Fireball extends Actor {
     return 'fireball';
   }
   getNextPosition(factor = 1) {
+    // зачем эта проверка?
   	if (this.speed.x === 0 && this.speed.y === 0) {
   		return this.pos;
   	}
@@ -274,6 +286,7 @@ class Fireball extends Actor {
 class HorizontalFireball extends Fireball {
   constructor(pos) {
     super(pos);
+    // pos, size, speed должны задаваться через вызов конструктора базового класса
     this.size = new Vector(1, 1);
     this.speed = new Vector(2, 0);
   }
@@ -282,6 +295,7 @@ class HorizontalFireball extends Fireball {
 class VerticalFireball extends Fireball {
   constructor(pos) {
     super(pos);
+    // pos, size, speed должны задаваться через вызов конструктора базового класса
     this.size = new Vector(1, 1);
     this.speed = new Vector(0, 2);
   }
@@ -290,7 +304,9 @@ class VerticalFireball extends Fireball {
 class FireRain extends Fireball {
   constructor(pos) {
     super(pos);
+    // поле лучше назвать как-нибудь вроде startPos
     this._pos = pos;
+    // pos, size, speed должны задаваться через вызов конструктора базового класса
     this.size = new Vector(1, 1);
     this.speed = new Vector(0, 3);
   }
@@ -303,6 +319,7 @@ class FireRain extends Fireball {
 class Coin extends Actor {
   constructor(pos) {
     super(pos);
+    // pos, size, speed должны задаваться через вызов конструктора базового класса
     this.pos = this.pos.plus(new Vector(0.2, 0.1));
     this._pos = this.pos;
     this.size = new Vector(0.6, 0.6);
