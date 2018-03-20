@@ -137,7 +137,7 @@ class Level {
   playerTouched(objectType, touchedActor) {
 
     if (this.status !== null) {
-      return false;
+      return;
     }
 
 
@@ -228,8 +228,8 @@ class Fireball extends Actor {
   }
   
   act(time, level) {
-    let nextPosition = this.getNextPosition(time);
-    let isIntersect = level.obstacleAt(nextPosition, this.size);
+    const nextPosition = this.getNextPosition(time);
+    const isIntersect = level.obstacleAt(nextPosition, this.size);
     if (!isIntersect) {
       this.pos = nextPosition;
     } else {
